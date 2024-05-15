@@ -11,14 +11,14 @@ jobs:
       - name: Move Files
         run: |
           mkdir -p /tmp/Birthday-Bot
-          mv .env /tmp/Birthday-Bot/ 2>/dev/null
+          mv .env /tmp/Birthday-Bot/
 
       - name: Checkout Repository
         uses: actions/checkout@v3
       
       - name: Restore Files
         run: |
-          mv /tmp/Birthday-Bot/.* . 2>/dev/null
+          mv /tmp/Birthday-Bot/.* .
           rm -rf /tmp/Birthday-Bot
           docker compose down
           docker compose up -d
