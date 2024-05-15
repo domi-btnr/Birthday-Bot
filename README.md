@@ -8,7 +8,6 @@ Birthday Bot is a Discord bot that helps users manage and celebrate birthdays wi
 - [Commands](#commands)
 - [Installation](#installation)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Usage
 
@@ -62,9 +61,3 @@ Some features that will be added later include:
 
 - Selecting a specific channel for birthday messages.
 - Changing the birthday message format.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-**Note:** If you prefer not to host the bot yourself, you can use my bot directly: [Birthday Bot](https://discord.com/api/oauth2/authorize?client_id=1239671141556162580&permissions=18432&scope=bot%20applications.commands)

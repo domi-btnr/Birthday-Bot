@@ -23,7 +23,9 @@ class UserCommands(commands.Cog):
 
     def get_common_timezones(ctx: AutocompleteContext) -> List[str]:
         timezones = pytz.common_timezones
-        return [tz for tz in timezones if ctx.value.lower() in tz.lower()]
+        return [
+            tz for tz in timezones if ctx.value.lower().replace(" ", "_") in tz.lower()
+        ]
 
     birthday = SlashCommandGroup(name="birthday")
 
