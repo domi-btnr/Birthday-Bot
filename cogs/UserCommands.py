@@ -25,7 +25,7 @@ class UserCommands(commands.Cog):
         timezones = pytz.common_timezones
         return [tz for tz in timezones if ctx.value.lower() in tz.lower()]
 
-    birthday = SlashCommandGroup(name="birthday", guild_ids=[1046704455485231135])
+    birthday = SlashCommandGroup(name="birthday")
 
     @birthday.command(name="set", description="Set your birthday")
     async def set_birthday(
