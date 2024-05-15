@@ -38,21 +38,25 @@ class UserCommands(commands.Cog):
             str,
             "Your timezone (Type to search)",
             autocomplete=get_common_timezones,
-            default="Europe/Berlin",
+            required=True,
         ),
     ):
+        if timezone not in pytz.common_timezones:
+            embed = Embed(description="Timezone not found", color=Colors.ERROR)
+            return await ctx.respond(embed=embed, ephemeral=True)
         timezone = pytz.timezone(timezone)
         try:
             date = datetime.strptime(date, "%d.%m.%Y")
             date = timezone.localize(date)
-        except ValueError:
+        except:
             return await ctx.respond(
                 "Invalid date format. Please use dd.MM.YYYY", ephemeral=True
             )
         if date > datetime.now(pytz.UTC):
-            return await ctx.respond(
-                "You can't set a birthday in the future", ephemeral=True
+            embed = Embed(
+                description="You can't set a birthday in the future", color=Colors.ERROR
             )
+            return await ctx.respond(embed=embed, ephemeral=True)
         self.bot.DB["users"].update_one(
             {"_id": ctx.author.id},
             {"$set": {"birthday": date, "timezone": timezone.zone}},
