@@ -124,7 +124,9 @@ class UserCommands(commands.Cog):
                 next_birthday = birthday_local.replace(year=current_year + 1)
 
             time_until_birthday = next_birthday - now
-            if time_until_birthday.days <= 30:
+            if time_until_birthday.days == 0:
+                time_key = "Today"
+            elif time_until_birthday.days <= 30:
                 time_key = f"In {time_until_birthday.days} {'Day' if time_until_birthday.days == 1 else 'Days'}"
             else:
                 months_until_birthday = (
@@ -135,14 +137,21 @@ class UserCommands(commands.Cog):
                 time_key = f"In {months_until_birthday} {'Month' if months_until_birthday == 1 else 'Months'}"
             users_by_time[time_key].append((user, birthday_local))
 
-        sorted_birthdays = sorted(users_by_time.keys(), key=lambda x: int(x.split()[1]))
+        sorted_birthdays = sorted(
+            users_by_time.keys(),
+            key=lambda x: (
+                1 if x == "Today" else 2 if "Day" in x else 3,
+                int(x.split()[1]) if x.startswith("In") else 0,
+            ),
+        )
 
         embed = Embed(title="Upcoming Birthdays", color=Colors.INFO)
         for time in sorted_birthdays:
             users = users_by_time[time]
+            value = ""
             for user in users:
-                value = f"- <@{user[0]['_id']}> <t:{int(user[1].timestamp())}:d> ({user[0]['timezone']})"
-                embed.add_field(name=time, value=value, inline=False)
+                value += f"- <@{user[0]['_id']}> <t:{int(user[1].timestamp())}:d> ({user[0]['timezone']})\n"
+            embed.add_field(name=time, value=value, inline=False)
         await ctx.respond(embed=embed)
 
 
