@@ -1,4 +1,4 @@
-py-cord==2.5.0
-pymongo==4.7.2
+py-cord==2.6.0
+pymongo==4.8.0
 python-dotenv
 pytz==2024.1

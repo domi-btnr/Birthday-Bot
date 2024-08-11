@@ -9,7 +9,7 @@ import pymongo
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from cogs.utils.logger import logger_setup
+from utils.logger import logger_setup
 
 intents = discord.Intents.default()
 intents.members = True

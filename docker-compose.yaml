@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   discord-bot:
+    container_name: Discord-BirthdayBot
     build: .
     env_file:
       - .env

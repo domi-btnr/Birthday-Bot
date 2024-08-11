@@ -4,11 +4,11 @@ from datetime import datetime
 from typing import List
 
 import pytz
-from discord import ApplicationContext, AutocompleteContext, Embed
-from discord.commands import Option, SlashCommandGroup
+from discord import ApplicationContext, AutocompleteContext, Embed, option
+from discord.commands import SlashCommandGroup
 from discord.ext import commands
 
-from cogs.utils.constants import Colors
+from utils.constants import Colors
 
 
 class UserCommands(commands.Cog):
@@ -30,33 +30,57 @@ class UserCommands(commands.Cog):
     birthday = SlashCommandGroup(name="birthday")
 
     @birthday.command(name="set", description="Set your birthday")
+    @option(
+        name="day",
+        description="The day of your birthday",
+        input_type=int,
+        required=True,
+        min_value=1,
+        max_value=31,
+    )
+    @option(
+        name="month",
+        description="The month of your birthday",
+        input_type=int,
+        required=True,
+        min_value=1,
+        max_value=12,
+    )
+    @option(
+        name="year",
+        description="The year of your birthday",
+        input_type=int,
+        required=True,
+    )
+    @option(
+        name="timezone",
+        description="Your timezone (Type to search)",
+        input_type=str,
+        required=True,
+        autocomplete=get_common_timezones,
+    )
     async def set_birthday(
-        self,
-        ctx: ApplicationContext,
-        date=Option(
-            str, "The date of your birthday (Format: dd.MM.YYYY)", required=True
-        ),
-        timezone=Option(
-            str,
-            "Your timezone (Type to search)",
-            autocomplete=get_common_timezones,
-            required=True,
-        ),
+        self, ctx: ApplicationContext, day: int, month: int, year: int, timezone: str
     ):
         if timezone not in pytz.common_timezones:
             embed = Embed(description="Timezone not found", color=Colors.ERROR)
             return await ctx.respond(embed=embed, ephemeral=True)
         timezone = pytz.timezone(timezone)
         try:
-            date = datetime.strptime(date, "%d.%m.%Y")
+            date = datetime.strptime(f"{day}.{month}.{year}", "%d.%m.%Y")
             date = timezone.localize(date)
         except:
-            return await ctx.respond(
-                "Invalid date format. Please use dd.MM.YYYY", ephemeral=True
-            )
+            embed = Embed(description="That's not a valid date", color=Colors.ERROR)
+            return await ctx.respond(embed=embed, ephemeral=True)
         if date > datetime.now(pytz.UTC):
             embed = Embed(
                 description="You can't set a birthday in the future", color=Colors.ERROR
+            )
+            return await ctx.respond(embed=embed, ephemeral=True)
+        if date > datetime.now(pytz.UTC).replace(year=datetime.now().year - 13):
+            embed = Embed(
+                description="You need to be atleast 13 years old to use Discord. Read more about [Discord's Terms of Service](https://discord.com/terms)",
+                color=Colors.ERROR,
             )
             return await ctx.respond(embed=embed, ephemeral=True)
         self.bot.DB["users"].update_one(
