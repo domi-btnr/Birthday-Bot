@@ -17,13 +17,23 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v3
-      
+
       - name: Restore Files
         run: |
           if [ -f /tmp/Birthday-Bot/.env ]; then
             mv /tmp/Birthday-Bot/.env .
           fi
           rm -rf /tmp/Birthday-Bot
+      
+      - name: Build Docker Container
+        run: docker compose build
+
+      - name: Restart Docker Container
+        run: |
           docker compose down
-          docker compose build
           docker compose up -d
+
+      - name: Clean Up Docker Images and Build Cache
+        run: |
+          docker image prune -f
+          docker builder prune -f
